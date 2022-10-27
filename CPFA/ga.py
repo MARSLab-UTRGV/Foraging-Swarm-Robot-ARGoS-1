@@ -32,7 +32,7 @@ class iAntGA(object):
     def __init__(self, xml_file, pop_size=50, gens=20, elites=3,
                  mut_rate=0.1, robots=20, tags=1024, length=3600,
                  system="linux", tests_per_gen=10, terminateFlag=0):
-				
+
         self.xml_file = xml_file #qilu 03/26/2016
         self.system = system
         self.pop_size = pop_size
@@ -56,7 +56,7 @@ class iAntGA(object):
         self.not_evolved_count = [0]*self.pop_size #qilu 04/02
         self.prev_not_evolved_count = [0]*self.pop_size #qilu 04/02
         self.prev_fitness = np.zeros(pop_size) #qilu 03/27/2016
-        
+
         name_and_extension = xml_file.split(".")
         XML_FILE_NAME = name_and_extension[0]
         for _ in xrange(pop_size):
@@ -67,7 +67,7 @@ class iAntGA(object):
         self.save_dir = os.path.join("gapy_saves", dirstring)
         mkdir_p(self.save_dir)
         logging.basicConfig(filename=os.path.join(self.save_dir,'iAntGA.log'),level=logging.DEBUG)
-        
+
     def test_fitness(self, argos_xml, seed):
         argos_util.set_seed(argos_xml, seed)
         xml_str = etree.tostring(argos_xml)
@@ -79,11 +79,11 @@ class iAntGA(object):
         tmpf.close()
         argos_args = ["argos3", "-n", "-c", tmpf.name]
         argos_run = subprocess.Popen(argos_args, stdout=subprocess.PIPE)
-          
+
 	    # Wait until argos is finished
         while argos_run.poll() == None:
             time.sleep(0.5)
-     
+
         if argos_run.returncode != 0:
             logging.error("Argos failed test")
             # when argos fails just return fitness 0
@@ -91,8 +91,7 @@ class iAntGA(object):
         lines = argos_run.stdout.readlines()
         if os.path.exists(tmpf.name):
 	    os.unlink(tmpf.name)
-        print lines[-1]
-        logging.info("partial fitness = %f", float(lines[-1].strip().split(",")[0]))
+        print(lines[-1])        logging.info("partial fitness = %f", float(lines[-1].strip().split(",")[0]))
         return float(lines[-1].strip().split(",")[0])
 
     def run_ga(self):
@@ -105,15 +104,14 @@ class iAntGA(object):
         seeds = [np.random.randint(2 ** 32) for _ in range(self.tests_per_gen)]
         logging.info("Seeds for generation: " + str(seeds))
         for i, p in enumerate(self.population):
-            print "Gen: "+str(self.current_gen)+'; Population: '+str(i+1)
-            for test_id in xrange(self.tests_per_gen):
+            print("Gen: "+str(self.current_gen)+'; Population: '+str(i+1))            for test_id in xrange(self.tests_per_gen):
                 seed = seeds[test_id]
                 logging.info("pop %d at test %d with seed %d", i, test_id, seed)
                 if self.not_evolved_idx[i] == -1 or self.not_evolved_count[i] > 3:
-                    self.not_evolved_count[i] =0;    
+                    self.not_evolved_count[i] =0;
                     self.fitness[i] += self.test_fitness(p, seed)
                 else: #qilu 03/27/2016 avoid recompute
-		    self.fitness[i] += self.prev_fitness[self.not_evolved_idx[i]] 
+		    self.fitness[i] += self.prev_fitness[self.not_evolved_idx[i]]
 	            logging.info("partial fitness = %d", self.prev_fitness[self.not_evolved_idx[i]])
         # use average fitness as fitness
         for i in xrange(len(self.fitness)):
@@ -124,7 +122,7 @@ class iAntGA(object):
         # sort fitness and population
         #fitpop = sorted(zip(self.fitness, self.population), reverse=True)
         #self.fitness, self.population = map(list, zip(*fitpop))
-        fitpop = sorted(zip(self.fitness, self.population, self.not_evolved_count), reverse=True) #qilu 04/02 add not_evolved_count  
+        fitpop = sorted(zip(self.fitness, self.population, self.not_evolved_count), reverse=True) #qilu 04/02 add not_evolved_count
         self.fitness, self.population, self.not_evolved_count = map(list, zip(*fitpop))
 
         self.save_population(seed)
@@ -142,7 +140,7 @@ class iAntGA(object):
         for i in xrange(self.elites):
             # reverse order from sort
             self.population.append(self.prev_population[i])
-            self.not_evolved_idx.append(i) 
+            self.not_evolved_idx.append(i)
             self.not_evolved_count.append(self.prev_not_evolved_count[i] + 1)
 
         # Now do crossover and mutation until population is full
@@ -157,10 +155,10 @@ class iAntGA(object):
             if p1c[0] <= p1c[1]:
                 parent1 = self.prev_population[p1c[0]]
                 idx1 = p1c[0]
-            else: 
+            else:
                 parent1 = self.prev_population[p1c[1]]
                 idx1 = p1c[1]
-                
+
             if p2c[0] <= p2c[1]:
                 parent2 = self.prev_population[p2c[0]]
                 idx2 = p2c[0]
@@ -170,7 +168,7 @@ class iAntGA(object):
             #if parent1 != parent2 and np.random.uniform()<0.5: #qilu 11/26/2015
             #pdb.set_trace()
             if parent1 != parent2: #qilu 03/26/2016
-                children = argos_util.uniform_crossover(xml_file, parent1, parent2, 0.5, self.system) # qilu 03/07/2016 add the crossover rate p  
+                children = argos_util.uniform_crossover(xml_file, parent1, parent2, 0.5, self.system) # qilu 03/07/2016 add the crossover rate p
             else:
                 children = [copy.deepcopy(parent1), copy.deepcopy(parent2)]
             for child in children:
@@ -182,7 +180,7 @@ class iAntGA(object):
                     self.not_evolved_count.append(self.prev_not_evolved_count[idx1] + 1)
 	       	elif argos_util.get_parameters(parent2) == argos_util.get_parameters(child):
                     #pdb.set_trace()
-                    self.not_evolved_idx.append(idx2) 
+                    self.not_evolved_idx.append(idx2)
                     self.not_evolved_count.append(self.prev_not_evolved_count[idx2] + 1)
                 else:
                     self.not_evolved_idx.append(-1)
@@ -216,19 +214,11 @@ class iAntGA(object):
         current_diversity_rate = normalized_stds.max()
         if current_diversity_rate<=diversity_rate and current_fitness_rate>= fitness_convergence_rate:
             self.terminateFlag = 1
-            print "Convergent ..."
-            print 
+            print("Convergent ...")            print
         elif current_diversity_rate>diversity_rate and current_fitness_rate<fitness_convergence_rate:
-            print 'Fitness is not convergent ...'
-            print 'Fitness rate is '+str(current_fitness_rate)
-            print 'Deviation is '+str(current_diversity_rate)
-        elif current_diversity_rate > diversity_rate:
-            print 'population diversity is high ...'
-            print 'The curent standard deviation is '+str(current_diversity_rate)+', which is greater than '+str(diversity_rate)+' ...'
-        else:
-            print 'Fitness is not convergent ...'
-            print 'The current rate of mean of fitness is '+str(current_fitness_rate)+', which is less than '+str(fitness_convergence_rate)+' ...'
-
+            print('Fitness is not convergent ...')            print('Fitness rate is '+str(current_fitness_rate))            print('Deviation is '+str(current_diversity_rate))        elif current_diversity_rate > diversity_rate:
+            print('population diversity is high ...')            print('The curent standard deviation is '+str(current_diversity_rate)+', which is greater than '+str(diversity_rate)+' ...')        else:
+            print('Fitness is not convergent ...')            print('The current rate of mean of fitness is '+str(current_fitness_rate)+', which is less than '+str(fitness_convergence_rate)+' ...')
 
     def save_population(self, seed):
         save_dir = self.save_dir
@@ -236,27 +226,27 @@ class iAntGA(object):
         filename = "gen_%d.gapy" % self.current_gen
         #population_data = []
         for f, p in zip(self.fitness, self.population):
-            data = copy.deepcopy(argos_util.get_parameters(p)) 
+            data = copy.deepcopy(argos_util.get_parameters(p))
             #data2= copy.deepcopy(argos_util.get_controller_params(p)) #qilu 07/25
-            if 'PrintFinalScore' in data: 
+            if 'PrintFinalScore' in data:
                 del data['PrintFinalScore']
             data["fitness"] = f
             data["seed"] = seed
             self.population_data.append(data)
             #population_data2.append(data2)
-            #print data
+            #prints data
         data_keys = argos_util.PARAMETER_LIMITS.keys()
         data_keys.append("fitness")
         data_keys.append("seed")
         data_keys.sort()
-        
+
         #data_keys2 = argos_util.controller_params_LIMITS.keys()
         #data_keys2.sort()
         with open(os.path.join(save_dir, filename), 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=data_keys, extrasaction='ignore')
             writer.writeheader()
             writer.writerows(self.population_data) #qilu 07/27
-            
+
 #            writer2 = csv.DictWriter(csvfile, fieldnames=data_keys2, extrasaction='ignore')
 #            writer2.writeheader()
 #            writer2.writerows(population_data2) #qilu 07/27
@@ -278,29 +268,23 @@ if __name__ == "__main__":
     elites = 1
     mut_rate = 0.05
     robots = 24  #robots = 16
-    tags=384 #qilu 03/26 for naming the output directory 
-    
+    tags=384 #qilu 03/26 for naming the output directory
+
     system = "linux"
     length = 900#720 # 12 minutes, length is in second. default length = 3600
     tests_per_gen= 10
     terminateFlag = 0
-    
+
     args = parser.parse_args()
-    print "pop_size ="+ str(pop_size)
-    print "gens="+str(gens)
-    print "elites="+ str(elites)
-    print "mut_rate="+str(mut_rate)
-    #print "robots="+str(robots)
-    #print "tags="+str(tags)
-    #print "time="+str(length/60)+" minutes"
-    print "Evaluation="+str(tests_per_gen)
-    
+    print("pop_size ="+ str(pop_size))    print("gens="+str(gens))    print("elites="+ str(elites))    print("mut_rate="+str(mut_rate))    #prints "robots="+str(robots)
+    #prints "tags="+str(tags)
+    #prints "time="+str(length/60)+" minutes"
+    print("Evaluation="+str(tests_per_gen))
     #xml_file = raw_input('Choose a file name(e.g. cluster_2_mac.argos)')
-    
+
     if args.xml_file:
 		xml_file = args.xml_file
-		print "The input file: "+xml_file
-    if args.pop_size:
+		print("The input file: "+xml_file)    if args.pop_size:
         pop_size = args.pop_size
 
     if args.gens:
@@ -326,11 +310,10 @@ if __name__ == "__main__":
 
     if args.terminateFlag:
         terminateFlag = args.terminateFlag
-	
+
     ga = iAntGA(xml_file = xml_file, pop_size=pop_size, gens=gens, elites=elites, mut_rate=mut_rate,
                 robots=robots, tags=tags, length=length, system=system, tests_per_gen=tests_per_gen, terminateFlag = terminateFlag)
     start = time.time()
     ga.run_ga()
     stop = time.time()
-    print 'The loaded file is '+ xml_file+' ...'
-    print 'It runs '+str((stop-start)/3600.0)+ ' hours...'
+    print('The loaded file is '+ xml_file+' ...')    print('It runs '+str((stop-start)/3600.0)+ ' hours...')

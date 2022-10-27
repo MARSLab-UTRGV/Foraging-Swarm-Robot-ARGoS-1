@@ -16,8 +16,7 @@ def get_data_from_file(filename):
 def compute_overall_forage_data(datas):
     words=datas[0].replace(",","").split()
     if words[0]!='tags_collected':
-        print "the data may not correct!"
-        return
+        print("the data may not correct!")        return
     forage=[]
     for line in datas[1:]:
         words =line.replace(",","").split()
@@ -34,7 +33,7 @@ def compute_overall_time_data(datas):
         words =line.replace(",","").split()
         travelTimeList.append(float(words[0])/60.0)
         searchTimeList.append(float(words[1])/60.0)
-      
+
     return travelTimeList, searchTimeList
 def autolabel(rects):
     # attach some text labels
@@ -58,16 +57,16 @@ def compute_time(timefileNames):
     travel, search =[], []
     for timeFileName in timeFileNames:
         timeDatas = get_data_from_file(timeFileName)
-        
+
         TravelTime, SearchTime = compute_overall_time_data(timeDatas)
 
-        
+
         travel.append(TravelTime)
         #travel_std.append(np.std(TravelTime))
-        
+
         search.append(SearchTime)
         #search_std.append(np.std(SearchTime))
-        
+
     #return np.array(travel_mean), np.array(travel_std), np.array(search_mean), np.array(search_std)
     return travel, search
 
@@ -95,10 +94,10 @@ def plot_stars(handle, datas, ind, width):
             z, p = scipy.stats.mannwhitneyu(y1, y2)
             p_value = p * 2
             s = stars(p)
-    
+
             y_max = np.max(np.concatenate((y1, y2)))
             y_min = np.min(np.concatenate((y1, y2)))
-    
+
             handle.annotate("", xy=(ind[i]+j*width, y_max), xycoords='data',
                 xytext=(ind[i]+(j+1)*width, y_max), textcoords='data',
                 arrowprops=dict(arrowstyle="-", ec='#aaaaaa',
@@ -106,14 +105,14 @@ def plot_stars(handle, datas, ind, width):
             #handle.text(ind[i]+(j+0.5)*width, y_max + abs(y_max - y_min)*0.1, stars(p_value),
             handle.text(ind[i]+(j+0.5)*width, y_max, stars(p_value),
                 horizontalalignment='center',
-                verticalalignment='center') 
+                verticalalignment='center')
             j+=1
         i+=1
 
 
 #CPFA
 travel_data, search_data =[] , []
-timeFileNames =["random_CPFA_r24_tag384_10by10_TravelSearchTimeData.txt", "powerlaw_CPFA_r24_tag384_10by10_TravelSearchTimeData.txt", "cluster_CPFA_r24_tag384_10by10_TravelSearchTimeData.txt"] 
+timeFileNames =["random_CPFA_r24_tag384_10by10_TravelSearchTimeData.txt", "powerlaw_CPFA_r24_tag384_10by10_TravelSearchTimeData.txt", "cluster_CPFA_r24_tag384_10by10_TravelSearchTimeData.txt"]
 
 CPFA_travel, CPFA_search= compute_time(timeFileNames)
 travel_data.append(CPFA_travel)
@@ -189,14 +188,12 @@ fig1, axarr = plt.subplots(2, sharex=True)
 
 Y=travel_data
 
-print "travel time"
-counter=1
+print("travel time")counter=1
 for y, color in zip(Y, colors):
     rect= axarr[0].boxplot(y,1, positions =ind+counter*width, patch_artist=True, widths=[0.05]*len(Y[0]))
     plt.setp(rect['boxes'], color=color)
     counter+=1
-    print [np.median(ele) for ele in y]
-
+    print([np.median(ele) for ele in y])
 plot_stars(axarr[0], travel_data, ind, width)
 
 # add some text for labels, title and axes ticks
@@ -207,15 +204,13 @@ axarr[0].set_ylabel('Travel time (minutes)', fontsize=18)
 
 
 Y=search_data
-print "search time"
-    
+print("search time")
 counter=1
 for y, color in zip(Y, colors):
     rect= axarr[1].boxplot(y,1, positions =ind+counter*width, patch_artist=True, widths=[0.05]*len(Y[0]))
     plt.setp(rect['boxes'], color=color)
     counter+=1
-    print [np.median(ele) for ele in y]
-
+    print([np.median(ele) for ele in y])
 plot_stars(axarr[1], search_data, ind, width)
 
 plt.figtext(0.14, 0.86, '____',

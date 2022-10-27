@@ -14,16 +14,15 @@ def ordered_data_from_file(filename):
     count = 0
     for line in filecontents:
         elems = line.replace('_', '=').split('=')
-        print elems
-        if len(elems) == 3:
-            coord_info.write(elems[0]+"_"+str(count)+'='+elems[2])  
+        print(elems)        if len(elems) == 3:
+            coord_info.write(elems[0]+"_"+str(count)+'='+elems[2])
             count+=1
         else:
-            coord_info.write(line)  
-             
-    coord_info.close()        
+            coord_info.write(line)
+
+    coord_info.close()
     f.close()
-    
+
     return table
 
 

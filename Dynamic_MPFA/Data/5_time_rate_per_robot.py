@@ -15,8 +15,7 @@ def get_data_from_file(filename):
 def compute_overall_forage_data(datas):
     words=datas[0].replace(",","").split()
     if words[0]!='tags_collected':
-        print "the data may not correct!"
-        return
+        print("the data may not correct!")        return
     forage=[]
     for line in datas[1:]:
         words =line.replace(",","").split()
@@ -29,7 +28,7 @@ def compute_overall_forage_data(datas):
 def compute_overall_time_data(datas):
     words=datas[0].replace(",","").split()
     #if words[0]!='Traveling':
-    #    print "the data may not correct!"
+    #    prints "the data may not correct!"
     #    return
     searchTime=[]
     travelTime=[]
@@ -39,7 +38,7 @@ def compute_overall_time_data(datas):
         words =line.replace(",","").split()
         travelTimeList.append(float(words[0])/60.0)
         searchTimeList.append(float(words[1])/60.0)
-        
+
     #travelTime.append(np.sum(travelTimeList)/60.0)
     #searchTime.append(np.sum(searchTimeList)/60.0)
     #travelTime.append(np.mean(travelTimeList))
@@ -74,12 +73,12 @@ def compute_time(timefileNames, forageFileNames):
     for timeFileName, forageFileName in zip (timeFileNames, forageFileNames):
         timeDatas = get_data_from_file(timeFileName)
         forageDatas = get_data_from_file(forageFileName)
-        
+
         TravelTime, SearchTime = compute_overall_time_data(timeDatas)
 
         forage = compute_overall_forage_data(forageDatas)
         travelTimePerSeed = [a/(b*num_robots) for a, b in zip(TravelTime ,forage)]
-         
+
         travel_mean_per_seed.append(np.mean(travelTimePerSeed))
         travel_std_per_seed.append(np.std(travelTimePerSeed))
         travel_mean.append(np.mean(TravelTime))
@@ -89,14 +88,14 @@ def compute_time(timefileNames, forageFileNames):
         search_std_per_seed.append(np.std(searchTimePerSeed))
         search_mean.append(np.mean(SearchTime))
         search_std.append(np.std(SearchTime))
-        
-    return np.array(travel_mean_per_seed), np.array(travel_std_per_seed), np.array(search_mean_per_seed), np.array(search_std_per_seed) 
-    
+
+    return np.array(travel_mean_per_seed), np.array(travel_std_per_seed), np.array(search_mean_per_seed), np.array(search_std_per_seed)
+
     #return np.array(travel_mean), np.array(travel_std), np.array(search_mean), np.array(search_std)
 
 #CPFA
 
-timeFileNames =["random_CPFA_r24_tag384_10by10_TravelSearchTimeData.txt", "powerlaw_CPFA_r24_tag384_10by10_TravelSearchTimeData.txt", "cluster_CPFA_r24_tag384_10by10_TravelSearchTimeData.txt"] 
+timeFileNames =["random_CPFA_r24_tag384_10by10_TravelSearchTimeData.txt", "powerlaw_CPFA_r24_tag384_10by10_TravelSearchTimeData.txt", "cluster_CPFA_r24_tag384_10by10_TravelSearchTimeData.txt"]
 
 forageFileNames = ["random_CPFA_r24_tag384_10by10_iAntTagData.txt", "powerlaw_CPFA_r24_tag384_10by10_iAntTagData.txt","cluster_CPFA_r24_tag384_10by10_iAntTagData.txt"]
 

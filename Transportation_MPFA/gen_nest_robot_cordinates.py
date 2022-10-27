@@ -6,16 +6,16 @@ import numpy as np
 from pylab import *
 
 def sub_gen_coord(max_x,min_x, k, b):
-    
+
     x1 = max_x - k/2.0
     y1 = max_y - k/2.0
     coordinates =[]
     for i in range(int(max_x - min_x)/k):
         for j in range(int(max_x - min_x)/k):
-            x = x1 -k*i  
+            x = x1 -k*i
             y = y1 -k*j
             coordinates.append([x, y])
-    #print coordinates
+    #prints coordinates
     return coordinates
 
 arena_width =64
@@ -42,16 +42,14 @@ else:
 
 
 if varySpeed:
-    speed = 0.16 * pow(arena_width, 0.333) 
+    speed = 0.16 * pow(arena_width, 0.333)
 else:
     speed = 0.16
-print 'speed=', speed
-##############################################################
+print('speed=', speed)##############################################################
 branch =4
 results=[]
 for k in gaps:
-  print k
-  results.append(sub_gen_coord(max_x, min_x, k, branch))
+  print(k)  results.append(sub_gen_coord(max_x, min_x, k, branch))
 
 
 coord_info =open("coord_for_worldFile.xml", "w")
@@ -63,9 +61,9 @@ count =1;
 
 for coords in results:
     for xy in coords:
-        coord_info.write("NestPosition_" + str(count) +"=\"" + str(xy[0]-shift) + ", " + str(xy[1]-shift)+"\"\n") 
-        coord_info_text.write(str(xy[0]-shift) + " " + str(xy[1]-shift)+"\n") 
-        count += 1  
+        coord_info.write("NestPosition_" + str(count) +"=\"" + str(xy[0]-shift) + ", " + str(xy[1]-shift)+"\"\n")
+        coord_info_text.write(str(xy[0]-shift) + " " + str(xy[1]-shift)+"\n")
+        count += 1
 
 coord_info_text.close()
 
@@ -77,8 +75,7 @@ total_robot=0
 
 num_Drobot = 1
 forageRate = 110/1800.0
-print "forageRate=", forageRate
-
+print("forageRate=", forageRate)
 delierying_robot =0
 foraging_robot =0
 
@@ -87,43 +84,34 @@ foraging_robot =0
 if(varyCapacity):
     quantity = 4
 else:
-    #print "nest location =[",xy[0],", ",xy[1], "]"
+    #prints "nest location =[",xy[0],", ",xy[1], "]"
     distance = np.sqrt(2*(gaps[-1]/2.0)**2)
-    print "distance=", distance
-    #print "unit=", unit
-    print (forageRate*2*distance)/speed
-    #quantity = math.ceil((forageRate*2*distance)/speed)
+    print("distance=", distance)    #prints "unit=", unit
+    print((forageRate*2*distance)/speed)    #quantity = math.ceil((forageRate*2*distance)/speed)
     quantity = round((forageRate*2*distance)/(speed*capacity))
     #quantity = (forageRate*2*distance)/speed
-    #print "2. delivery quantity", quantity
+    #prints "2. delivery quantity", quantity
     if quantity == 0:
         quantity = 1
-print "# of region delivery robot", quantity
-
+print("# of region delivery robot", quantity)
 idx =1
 level = len(gaps)
-print "quantity=", quantity
-print "level=", level
-for coords in results[:-1]:
-    print "idx=", idx
-    for xy in coords:
-	print " nest location =[",xy[0],", ",xy[1], "]"
-	if(varyCapacity):
+print("quantity=", quantity)print("level=", level)for coords in results[:-1]:
+    print("idx=", idx)    for xy in coords:
+	print(" nest location =[",xy[0],", ",xy[1], "]")	if(varyCapacity):
 	    quantity2 = 4
 	else:
             #distance = np.sqrt(2*(gaps[idx]/2.0)**2)
-            #print "distance=", distance
+            #prints "distance=", distance
             #quantity = math.ceil((forageRate*2*distance*branch**(level-idx-1))/speed)
             #quantity = (forageRate*2*distance*branch**(level-idx-1))/speed
-            quantity2 = quantity*((2*branch)**(level-idx)) 
-            print "measured quantity=", quantity2
-            #maxQuantity = round(distance/1.01)
-            #print "maxQuantity=", maxQuantity 
+            quantity2 = quantity*((2*branch)**(level-idx))
+            print("measured quantity=", quantity2)            #maxQuantity = round(distance/1.01)
+            #prints "maxQuantity=", maxQuantity
             #if quantity > maxQuantity:
             #    quantity = maxQuantity
-    
-        print "1. delivery quantity", quantity2
-        delierying_robot += quantity2
+
+        print("1. delivery quantity", quantity2)        delierying_robot += quantity2
         total_robot += quantity2
 	coord_info.write("<distribute>\n")
         #coord_info.write("<position max=\"" + str(xy[0]+gaps[-1]/6.0)+ ", " + str(xy[1]+gaps[-1]/6.0) + ", 0.0\" method=\"uniform\" min=\"" + str(xy[0]-gaps[-1]/6.0)+ ", " + str(xy[1]-gaps[-1]/6.0) + ", 0.0\"/>\n")
@@ -133,8 +121,8 @@ for coords in results[:-1]:
         coord_info.write("<foot-bot id=\"D" + str(count)+ "-" + "\"><controller config=\"MPFA\"/></foot-bot>\n")
         coord_info.write("</entity>\n")
         coord_info.write("</distribute>\n\n")
-        count += 1  
-    idx += 1    
+        count += 1
+    idx += 1
 
 # there are foraging and delivering robots in each region
 for xy in results[-1]:
@@ -146,7 +134,7 @@ for xy in results[-1]:
     coord_info.write("<foot-bot id=\"F" + str(count)+ "-" + "\"><controller config=\"MPFA\"/></foot-bot>\n")
     coord_info.write("</entity>\n")
     coord_info.write("</distribute>\n\n")
-    
+
     coord_info.write("<distribute>\n")
     #coord_info.write("<position max=\"" + str(xy[0]-shift+gaps[-1]/6.0)+ ", " + str(xy[1]-shift+gaps[-1]/6.0) + ", 0.0\" method=\"uniform\" min=\"" + str(xy[0]-shift-gaps[-1]/6.0)+ ", " + str(xy[1]-shift-gaps[-1]/6.0) + ", 0.0\"/>\n")
     coord_info.write("<position max=\"" + str(xy[0]-shift+gaps[-1]/6.0)+ ", " + str(xy[1]-shift+gaps[-1]/6.0) + ", 0.0\" method=\"uniform\" min=\"" + str(xy[0]-shift-gaps[-1]/6.0)+ ", " + str(xy[1]-shift-gaps[-1]/6.0) + ", 0.0\"/>\n")
@@ -155,23 +143,19 @@ for xy in results[-1]:
     coord_info.write("<foot-bot id=\"D" + str(count)+ "-" + "\"><controller config=\"MPFA\"/></foot-bot>\n")
     coord_info.write("</entity>\n")
     coord_info.write("</distribute>\n\n")
-    count += 1  
+    count += 1
 
     delierying_robot += quantity
     foraging_robot += 4
     total_robot += 4+quantity
 
-print "foraging_robot=", foraging_robot
-print "deliverying_robot=", delierying_robot
-print "total robot =", total_robot
-print total_robot == delierying_robot+foraging_robot
-coord_info.close() 
+print("foraging_robot=", foraging_robot)print("deliverying_robot=", delierying_robot)print("total robot =", total_robot)print(total_robot == delierying_robot+foraging_robot)coord_info.close()
 
 
 
 #for coords in results[:-1]:
 #    for xy in coords:
-	
+
 #	coord_info.write("<distribute>\n")
 #	coord_info.write("<position method=\"grid\"\n")
 #	coord_info.write("center=\"" + str(xy[0])+ ", " + str(xy[1])+ ", 0.0\"\n")
@@ -184,7 +168,7 @@ coord_info.close()
 #	coord_info.write("</foot-bot>\n")
 #	coord_info.write("</entity>\n")
 #	coord_info.write("</distribute>\n\n")
-#	count += 1  
+#	count += 1
 
 ## there are foraging and delivering robots in each region
 #for xy in results[-1]:
@@ -200,8 +184,8 @@ coord_info.close()
 #	coord_info.write("</foot-bot>\n")
 #	coord_info.write("</entity>\n")
 #	coord_info.write("</distribute>\n\n")
-	
-	
+
+
 #	coord_info.write("<distribute>\n")
 #	coord_info.write("<position method=\"grid\"\n")
 #	coord_info.write("center=\"" + str(xy[0])+ ", " + str(xy[1]+0.5)+ ", 0.0\"\n")
@@ -214,6 +198,4 @@ coord_info.close()
 #	coord_info.write("</foot-bot>\n")
 #	coord_info.write("</entity>\n")
 #	coord_info.write("</distribute>\n\n")
-#	count += 1  
-    
-
+#	count += 1

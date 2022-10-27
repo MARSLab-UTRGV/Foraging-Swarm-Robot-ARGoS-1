@@ -19,20 +19,16 @@ if __name__ == "__main__":
     files = ['02_05_regular_arena_scale_by_4/Random_MPFA_mapTo_40by40_no_backtracking_r1704_d257_tag6400_80by80.xml']
     run_count = 5
     #for (run_count, files) in zip(runs, allFiles):
-    #    print "Total runs=",run_count
+    #    prints "Total runs=",run_count
     for file in files:
-	print file
-	this_run = Random_Argos("./experiments/"+file)
+	print(file)	this_run = Random_Argos("./experiments/"+file)
 	count =1
 	startTime =time.time()
-	
+
 	for _ in range(run_count):
-	    print "Run "+str(count)
-	    singleRun_StartTime =  time.time()
+	    print("Run "+str(count))	    singleRun_StartTime =  time.time()
 	    count = count+1
 	    output = subprocess.check_output(['argos3 -c ' + this_run.argos_xml], shell=True, stderr=subprocess.STDOUT)
 	    singleRun_EndTime = time.time()
-	    print 'This run takes '+str((singleRun_EndTime-singleRun_StartTime)/60.0)+' minutes...' 
-	endTime = time.time()
-	print 'The total running time is '+str((endTime-startTime)/60.0)+' minutes...'
-	
+	    print('This run takes '+str((singleRun_EndTime-singleRun_StartTime)/60.0)+' minutes...')	endTime = time.time()
+	print('The total running time is '+str((endTime-startTime)/60.0)+' minutes...')

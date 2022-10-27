@@ -17,14 +17,12 @@ if __name__ == "__main__":
     #files = ['Cluster_static_K-means_10by10.xml', 'Powerlaw_static_K-means_10by10.xml','Random_static_K-means_10by10.xml']
     files = ['Powerlaw_static_K-means_r24_50by50.xml']
     for file in files:
-        print file
-        this_run = Random_Argos("./experiments/"+file)
+        print(file)        this_run = Random_Argos("./experiments/"+file)
         count =1
         startTime =time.time()
         #result =[]
         for _ in range(80):
-            print "Run "+str(count)
-            count = count+1
+            print("Run "+str(count))            count = count+1
             output = subprocess.check_output(['argos3 -n -c ' + this_run.argos_xml], shell=True, stderr=subprocess.STDOUT)
             #elemnts = output.replace('\n', ',').split(',')
             #result.append(elemnts[-5])
@@ -32,4 +30,4 @@ if __name__ == "__main__":
         #    outputFile.write(ele+' ')
         #outputFile.close()
         endTime = time.time()
-        print 'The total running time is '+str((endTime-startTime)/60.0)+' minutes...'
+        print('The total running time is '+str((endTime-startTime)/60.0)+' minutes...')

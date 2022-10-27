@@ -10,7 +10,7 @@ LINUX_CONTROLLER_LIB = "build/controllers/libiAnt_controller.so"
 MAC_CONTROLLER_LIB = "build/controllers/libiAnt_controller.dylib"
 LINUX_LOOP_LIB = "build/loop_functions/libiAnt_loop_functions.so"
 MAC_LOOP_LIB = "build/loop_functions/libiAnt_loop_functions.dylib"
-    
+
 PARAMETER_LIMITS = {
     "RateOfLayingPheromone": (5, 20),
     "RateOfPheromoneDecay": (0, 0.5), #qilu 04/25 the sampled maximum 0.99 in 5000. The mean is 0.1 03/27/2016 exponential distribtion
@@ -37,7 +37,7 @@ def load_xml_default(xml_file):
 
 #def default_argos_xml(robots, time, system="linux"):
 def default_argos_xml(xml_file, time, system="linux"):
-    ARGOS_XML_DEFAULT= load_xml_default(xml_file) 
+    ARGOS_XML_DEFAULT= load_xml_default(xml_file)
     xml = etree.fromstring(ARGOS_XML_DEFAULT)
     #xml.find("arena").find("distribute").find(
     #"entity").attrib["quantity"] = str(robots)
@@ -66,7 +66,7 @@ def uniform_rand_argos_xml(xml_file, robots, time, system="linux"):
             parameters[key] = str(np.random.exponential(0.2))
         else:
             parameters[key] = str(np.random.uniform(PARAMETER_LIMITS[key][0], PARAMETER_LIMITS[key][1]))
-    set_parameters(xml, parameters)    
+    set_parameters(xml, parameters)
     return xml
 
 
@@ -106,7 +106,7 @@ def mutate_parameters(argos_xml, probability):
                 val += np.random.normal(0, 0.02)
                 if val<0: val =-val
             elif key == "RateOfInformedSearchDecay" :
-                val += 2*np.random.normal(0, 0.02)  
+                val += 2*np.random.normal(0, 0.02)
                 if val<0: val = -val
             else:
                 val += PARAMETER_LIMITS[key][1]*np.random.normal(0, 0.02)  # It should be scaled by the range of each parameter 10/12/2015
@@ -116,8 +116,8 @@ def mutate_parameters(argos_xml, probability):
                     elif val < PARAMETER_LIMITS[key][0]:
                         val = 2*PARAMETER_LIMITS[key][0]-val
             parameters[key] = str(val)
-    if flag: 
-        set_parameters(argos_xml, parameters)   
+    if flag:
+        set_parameters(argos_xml, parameters)
 
 #qilu 11/21/2015
 def two_point_crossover(xml_file, p1_xml, p2_xml, system="linux"):
@@ -126,7 +126,7 @@ def two_point_crossover(xml_file, p1_xml, p2_xml, system="linux"):
     child_parameters = copy.deepcopy(get_parameters(p2_xml))
     point1 = np.random.randint(0, len(p1_parameters))
     point2 = np.random.randint(0, len(p1_parameters))
-    if point1< point2: 
+    if point1< point2:
         minPoint = point1
         maxPoint = point2
     else:
@@ -138,7 +138,7 @@ def two_point_crossover(xml_file, p1_xml, p2_xml, system="linux"):
         #if from_p1:
         if count>= minPoint and count<=maxPoint:
             child_parameters[key] = p1_parameters[key]
-        count += 1 
+        count += 1
         from_p1 = not from_p1
     parent_time = p1_xml.find("framework").find("experiment").attrib["length"] # do we need these two lines? qilu 07/27
     parent_robots = p1_xml.find("arena").find("distribute").find(
@@ -154,14 +154,14 @@ def uniform_crossover(xml_file, p1_xml, p2_xml, rate, system="linux"):
     # initialize children
     child1_parameters = copy.deepcopy(get_parameters(p1_xml))
     child2_parameters = copy.deepcopy(get_parameters(p2_xml))
-    
+
     flag=False
     for key in PARAMETER_LIMITS:
         if np.random.uniform()<rate:
             flag =True
             child1_parameters[key] = p2_parameters[key]
             child2_parameters[key] = p1_parameters[key]
-            
+
     if flag:
         parent_time = p1_xml.find("framework").find("experiment").attrib["length"]
         #parent_robots = p1_xml.find("arena").find("distribute").find("entity").attrib["quantity"]
@@ -174,7 +174,7 @@ def uniform_crossover(xml_file, p1_xml, p2_xml, rate, system="linux"):
     else:
         # no cross over
         return [p1_xml, p2_xml]
-    
+
 
 #def uniform_crossover(p1_xml, p2_xml, system="linux"):
 #    p1_parameters = copy.deepcopy(get_parameters(p1_xml))
@@ -190,7 +190,7 @@ def uniform_crossover(xml_file, p1_xml, p2_xml, rate, system="linux"):
 #        "entity").attrib["quantity"]
 #    #child = default_argos_xml(system=system, time=parent_time, robots=parent_robots)
 #    child = default_argos_xml(system=system, time=parent_time)
-#    set_parameters(child, child_parameters)    
+#    set_parameters(child, child_parameters)
 #    return child
 
 def read_pop_from_csv(filename):
@@ -246,7 +246,7 @@ if __name__ == "__main__":
     system='linux'
 
     pop = read_pop_from_csv(gen_file)
-    
+
     if args.create:
         if args.length:
             length=args.length
@@ -256,11 +256,7 @@ if __name__ == "__main__":
             robots=args.robots
         if args.system:
             system = args.system
-        print create_argos_from_paramters(pop[0], sradius, robots, length, system)
-    elif args.all:
+        print(create_argos_from_paramters(pop[0], sradius, robots, length, system))    elif args.all:
         for p in pop:
-            print "Fitness:", p["fitness"]
-            print xml_string_parameter_chunk(p)
-    else:
-        print "Fitness:", pop[0]["fitness"]
-        print xml_string_parameter_chunk(pop[0])
+            print("Fitness:", p["fitness"])            print(xml_string_parameter_chunk(p))    else:
+        print("Fitness:", pop[0]["fitness"])        print(xml_string_parameter_chunk(pop[0]))

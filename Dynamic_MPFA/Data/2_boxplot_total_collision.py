@@ -25,10 +25,9 @@ def get_multiple_data(files):
 def compute_overall_collision_data(datas):
     words=datas[0].replace(",","").split()
     if words[0]!='tags_collected':
-        print "the data may not correct!"
-        return
+        print("the data may not correct!")        return
     collision=[]
-    forage = [] 
+    forage = []
     for line in datas[1:]:
         words =line.replace(",","").split()
         collision.append(float(words[1]))
@@ -72,10 +71,10 @@ def plot_stars(handle, datas, ind, width):
             z, p = scipy.stats.mannwhitneyu(y1, y2)
             p_value = p * 2
             s = stars(p)
-    
+
             y_max = np.max(np.concatenate((y1, y2)))
             y_min = np.min(np.concatenate((y1, y2)))
-    
+
             handle.annotate("", xy=(ind[i]+j*width, y_max), xycoords='data',
                 xytext=(ind[i]+(j+1)*width, y_max), textcoords='data',
                 arrowprops=dict(arrowstyle="-", ec='#aaaaaa',
@@ -83,7 +82,7 @@ def plot_stars(handle, datas, ind, width):
             #handle.text(ind[i]+(j+0.5)*width, y_max + abs(y_max - y_min)*0.1, stars(p_value),
             handle.text(ind[i]+(j+0.5)*width, y_max, stars(p_value),
                 horizontalalignment='center',
-                verticalalignment='center') 
+                verticalalignment='center')
             j+=1
         i+=1
 
@@ -145,8 +144,7 @@ for y, color in zip(Y, colors):
     rect= axarr.boxplot(y,1, positions =ind+counter*width, patch_artist=True, widths=[0.05]*len(Y[0]))
     plt.setp(rect['boxes'], color=color)
     counter+=1
-    print [np.median(ele) for ele in y]  
-
+    print([np.median(ele) for ele in y]  )
 plot_stars(axarr, datas, ind, width)
 
 plt.figtext(0.14, 0.85, '____',
