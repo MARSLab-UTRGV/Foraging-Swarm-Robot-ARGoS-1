@@ -18,7 +18,7 @@
 #include <ga-mpi/GA1DArrayGenome.h>
 #include <ga-mpi/GAMask.h>
 
-template <class T> int 
+template <class T> int
 GA1DArrayIsHole(const GA1DArrayGenome<T>&, const GA1DArrayGenome<T>&,
 		int, int, int);
 
@@ -36,15 +36,15 @@ GA1DArrayGenome<T>::classID() const {return GAID::ArrayGenome;}
 // this point - initialization must be done explicitly by the user of the
 // genome (eg when the population is created or reset).  If we called the
 // initializer routine here then we could end up with multiple initializations
-// and/or calls to dummy initializers (for example when the genome is 
+// and/or calls to dummy initializers (for example when the genome is
 // created with a dummy initializer and the initializer is assigned later on).
 // Besides, we default to the no-initialization initializer by calling the
 // default genome constructor.
-template <class T> 
+template <class T>
 GA1DArrayGenome<T>::
 GA1DArrayGenome(unsigned int length, GAGenome::Evaluator f, void * u) :
 GAArray<T>(length),
-GAGenome(DEFAULT_1DARRAY_INITIALIZER, 
+GAGenome(DEFAULT_1DARRAY_INITIALIZER,
 	 DEFAULT_1DARRAY_MUTATOR,
 	 DEFAULT_1DARRAY_COMPARATOR) {
   evaluator(f);
@@ -56,9 +56,9 @@ GAGenome(DEFAULT_1DARRAY_INITIALIZER,
 
 // This is the copy initializer.  We set everything to the default values, then
 // copy the original.  The Array creator takes care of zeroing the data.
-template <class T> 
+template <class T>
 GA1DArrayGenome<T>::
-GA1DArrayGenome(const GA1DArrayGenome<T> & orig) : 
+GA1DArrayGenome(const GA1DArrayGenome<T> & orig) :
 GAArray<T>(orig.sz), GAGenome() {
   GA1DArrayGenome<T>::copy(orig);
 }
@@ -74,7 +74,7 @@ GA1DArrayGenome<T>::~GA1DArrayGenome() { }
 // what we define here - a virtual function).  We should check to be sure that
 // both genomes are the same class and same dimension.  This function tries
 // to be smart about they way it copies.  If we already have data, then we do
-// a memcpy of the one we're supposed to copy.  If we don't or we're not the 
+// a memcpy of the one we're supposed to copy.  If we don't or we're not the
 // same size as the one we're supposed to copy, then we adjust ourselves.
 //   The Array takes care of the resize in its copy method.
 template <class T> void
@@ -92,7 +92,7 @@ GA1DArrayGenome<T>::copy(const GAGenome & orig){
 template <class T> GAGenome *
 GA1DArrayGenome<T>::clone(GAGenome::CloneMethod flag) const {
   GA1DArrayGenome<T> *cpy = new GA1DArrayGenome<T>(nx);
-  if(flag == CONTENTS){ 
+  if(flag == CONTENTS){
     cpy->copy(*this);
   }
   else{
@@ -110,10 +110,10 @@ GA1DArrayGenome<T>::clone(GAGenome::CloneMethod flag) const {
 // length, then we don't do anything.
 //   We pay attention to the values of minX and maxX - they determine what kind
 // of resizing we are allowed to do.  If a resize is requested with a length
-// less than the min length specified by the behaviour, we set the minimum 
+// less than the min length specified by the behaviour, we set the minimum
 // to the length.  If the length is longer than the max length specified by
 // the behaviour, we set the max value to the length.
-//   We return the total size (in bits) of the genome after resize. 
+//   We return the total size (in bits) of the genome after resize.
 //   We don't do anything to the new contents!
 template <class T> int
 GA1DArrayGenome<T>::resize(int len)
@@ -160,7 +160,7 @@ GA1DArrayGenome<T>::write(STD_OSTREAM & os) const {
 //   Set the resize behaviour of the genome.  A genome can be fixed
 // length, resizeable with a max and min limit, or resizeable with no limits
 // (other than an implicit one that we use internally).
-//   A value of 0 means no resize, a value less than zero mean unlimited 
+//   A value of 0 means no resize, a value less than zero mean unlimited
 // resize, and a positive value means resize with that value as the limit.
 template <class T> int
 GA1DArrayGenome<T>::
@@ -183,7 +183,7 @@ GA1DArrayGenome<T>::resizeBehaviour() const {
   return val;
 }
 
-template <class T> int 
+template <class T> int
 GA1DArrayGenome<T>::equal(const GAGenome & c) const {
   const GA1DArrayGenome<T> & b = DYN_CAST(const GA1DArrayGenome<T> &, c);
   return((this == &c) ? 1 : ((nx != b.nx) ? 0 : GAArray<T>::equal(b,0,0,nx)));
@@ -205,7 +205,7 @@ its own, independent allele set.  If we clone a new genome, the new one gets a
 link to our allele set (so we don't end up with zillions of allele sets).  Same
 is true for the copy constructor.
   The array may have a single allele set or an array of allele sets, depending
-on which creator was called.  Either way, the allele set cannot be changed 
+on which creator was called.  Either way, the allele set cannot be changed
 once the array is created.
 ---------------------------------------------------------------------------- */
 template <class T> const char *
@@ -213,7 +213,7 @@ GA1DArrayAlleleGenome<T>::className() const {return "GA1DArrayAlleleGenome";}
 template <class T> int
 GA1DArrayAlleleGenome<T>::classID() const {return GAID::ArrayAlleleGenome;}
 
-template <class T> 
+template <class T>
 GA1DArrayAlleleGenome<T>::
 GA1DArrayAlleleGenome(unsigned int length, const GAAlleleSet<T> & s,
 		      GAGenome::Evaluator f, void * u) :
@@ -228,7 +228,7 @@ GA1DArrayGenome<T>(length, f, u){
   this->crossover(GA1DArrayAlleleGenome<T>::DEFAULT_1DARRAY_ALLELE_CROSSOVER);
 }
 
-template <class T> 
+template <class T>
 GA1DArrayAlleleGenome<T>::
 GA1DArrayAlleleGenome(const GAAlleleSetArray<T> & sa,
 		      GAGenome::Evaluator f, void * u) :
@@ -247,9 +247,9 @@ GA1DArrayGenome<T>(sa.size(), f, u) {
 
 // The copy constructor creates a new genome whose allele set refers to the
 // original's allele set.
-template <class T> 
+template <class T>
 GA1DArrayAlleleGenome<T>::
-GA1DArrayAlleleGenome(const GA1DArrayAlleleGenome<T>& orig) : 
+GA1DArrayAlleleGenome(const GA1DArrayAlleleGenome<T>& orig) :
 GA1DArrayGenome<T>(orig.sz) {
   naset = 0;
   aset = (GAAlleleSet<T>*)0;
@@ -265,7 +265,7 @@ GA1DArrayAlleleGenome<T>::~GA1DArrayAlleleGenome(){
 
 
 // This implementation of clone does not make use of the contents/attributes
-// capability because this whole interface isn't quite right yet...  Just 
+// capability because this whole interface isn't quite right yet...  Just
 // clone the entire thing, contents and all.
 template <class T> GAGenome *
 GA1DArrayAlleleGenome<T>::clone(GAGenome::CloneMethod) const {
@@ -273,10 +273,10 @@ GA1DArrayAlleleGenome<T>::clone(GAGenome::CloneMethod) const {
 }
 
 
-template <class T> void 
+template <class T> void
 GA1DArrayAlleleGenome<T>::copy(const GAGenome& orig){
   if(&orig == this) return;
-  const GA1DArrayAlleleGenome<T> * c = 
+  const GA1DArrayAlleleGenome<T> * c =
     DYN_CAST(const GA1DArrayAlleleGenome<T>*, &orig);
   if(c) {
     GA1DArrayGenome<T>::copy(*c);
@@ -339,7 +339,7 @@ GA1DArrayAlleleGenome<T>::equal(const GAGenome & c) const {
 ---------------------------------------------------------------------------- */
 // The random initializer sets the elements of the array based on the alleles
 // set.  We choose randomly the allele for each element.
-template <class ARRAY_TYPE> void 
+template <class ARRAY_TYPE> void
 GA1DArrayAlleleGenome<ARRAY_TYPE>::UniformInitializer(GAGenome & c)
 {
   GA1DArrayAlleleGenome<ARRAY_TYPE> &child=
@@ -354,7 +354,7 @@ GA1DArrayAlleleGenome<ARRAY_TYPE>::UniformInitializer(GAGenome & c)
 // and assign each element the next allele in the allele set.  Once each
 // element has been initialized, scramble the contents by swapping elements.
 // This assumes that there is only one allele set for the array.
-template <class ARRAY_TYPE> void 
+template <class ARRAY_TYPE> void
 GA1DArrayAlleleGenome<ARRAY_TYPE>::OrderedInitializer(GAGenome & c)
 {
   GA1DArrayAlleleGenome<ARRAY_TYPE> &child=
@@ -372,15 +372,15 @@ GA1DArrayAlleleGenome<ARRAY_TYPE>::OrderedInitializer(GAGenome & c)
 }
 
 
-// Randomly pick elements in the array then set the element to any of the 
+// Randomly pick elements in the array then set the element to any of the
 // alleles in the allele set for this genome.  This will work for any number
 // of allele sets for a given array.
-template <class ARRAY_TYPE> int 
+template <class ARRAY_TYPE> int
 GA1DArrayAlleleGenome<ARRAY_TYPE>::FlipMutator(GAGenome & c, float pmut)
 {
   GA1DArrayAlleleGenome<ARRAY_TYPE> &child=
     DYN_CAST(GA1DArrayAlleleGenome<ARRAY_TYPE> &, c);
-  register int n, i;
+  int n, i;
   if(pmut <= 0.0) return(0);
 
   float nMut = pmut * STA_CAST(float,child.length());
@@ -404,11 +404,11 @@ GA1DArrayAlleleGenome<ARRAY_TYPE>::FlipMutator(GAGenome & c, float pmut)
 
 
 // Randomly swap elements in the array.
-template <class ARRAY_TYPE> int 
+template <class ARRAY_TYPE> int
 GA1DArrayGenome<ARRAY_TYPE>::SwapMutator(GAGenome & c, float pmut)
 {
   GA1DArrayGenome<ARRAY_TYPE> &child=DYN_CAST(GA1DArrayGenome<ARRAY_TYPE>&, c);
-  register int n, i;
+  int n, i;
   if(pmut <= 0.0) return(0);
 
   float nMut = pmut * STA_CAST(float,child.length());
@@ -469,7 +469,7 @@ ElementComparator(const GAGenome& a, const GAGenome& b)
 #define SWAP(a,b) {unsigned int tmp=a; a=b; b=tmp;}
 
 // Randomly take bits from each parent.  For each bit we flip a coin to see if
-// that bit should come from the mother or the father.  If strings are 
+// that bit should come from the mother or the father.  If strings are
 // different lengths then we need to use the mask to get things right.
 template <class T> int
 GA1DArrayGenome<T>::
@@ -517,8 +517,8 @@ UniformCrossover(const GAGenome& p1, const GAGenome& p2,
     n = 2;
   }
   else if(c1 || c2){
-    GA1DArrayGenome<T> &sis = (c1 ? 
-			       DYN_CAST(GA1DArrayGenome<T> &, *c1) : 
+    GA1DArrayGenome<T> &sis = (c1 ?
+			       DYN_CAST(GA1DArrayGenome<T> &, *c1) :
 			       DYN_CAST(GA1DArrayGenome<T> &, *c2));
 
     if(mom.length() == dad.length() && sis.length() == mom.length()){
@@ -550,7 +550,7 @@ UniformCrossover(const GAGenome& p1, const GAGenome& p2,
 // we cannot handle that and post an error message.
 template <class T> int
 GA1DArrayGenome<T>::
-OnePointCrossover(const GAGenome& p1, const GAGenome& p2, 
+OnePointCrossover(const GAGenome& p1, const GAGenome& p2,
 		  GAGenome* c1, GAGenome* c2){
   const GA1DArrayGenome<T> &mom=DYN_CAST(const GA1DArrayGenome<T> &, p1);
   const GA1DArrayGenome<T> &dad=DYN_CAST(const GA1DArrayGenome<T> &, p2);
@@ -565,7 +565,7 @@ OnePointCrossover(const GAGenome& p1, const GAGenome& p2,
 
     if(sis.resizeBehaviour() == GAGenome::FIXED_SIZE &&
        bro.resizeBehaviour() == GAGenome::FIXED_SIZE){
-      if(mom.length() != dad.length() || 
+      if(mom.length() != dad.length() ||
 	 sis.length() != bro.length() ||
 	 sis.length() != mom.length()){
 	GAErr(GA_LOC, mom.className(), "one-point cross", gaErrSameLengthReqd);
@@ -587,17 +587,17 @@ OnePointCrossover(const GAGenome& p1, const GAGenome& p2,
       sis.resize(momsite+dadlen);
       bro.resize(dadsite+momlen);
     }
-    
+
     sis.copy(mom, 0, 0, momsite);
     sis.copy(dad, momsite, dadsite, dadlen);
     bro.copy(dad, 0, 0, dadsite);
     bro.copy(mom, dadsite, momsite, momlen);
-  
+
     nc = 2;
   }
   else if(c1 || c2){
-    GA1DArrayGenome<T> &sis = (c1 ? 
-			       DYN_CAST(GA1DArrayGenome<T> &, *c1) : 
+    GA1DArrayGenome<T> &sis = (c1 ?
+			       DYN_CAST(GA1DArrayGenome<T> &, *c1) :
 			       DYN_CAST(GA1DArrayGenome<T> &, *c2));
 
     if(sis.resizeBehaviour() == GAGenome::FIXED_SIZE){
@@ -615,7 +615,7 @@ OnePointCrossover(const GAGenome& p1, const GAGenome& p2,
       dadlen = dad.length() - dadsite;
       sis.resize(momsite+dadlen);
     }
-    
+
     if(GARandomBit()){
       sis.copy(mom, 0, 0, momsite);
       sis.copy(dad, momsite, dadsite, dadlen);
@@ -642,14 +642,14 @@ OnePointCrossover(const GAGenome& p1, const GAGenome& p2,
 
 
 // Two point crossover for the 1D array genome.  Similar to the single point
-// crossover, but here we pick two points then grab the sections based upon 
+// crossover, but here we pick two points then grab the sections based upon
 // those two points.
 //   When we pick the points, it doesn't matter where they fall (one is not
 // dependent upon the other).  Make sure we get the lesser one into the first
 // position of our site array.
 template <class T> int
 GA1DArrayGenome<T>::
-TwoPointCrossover(const GAGenome& p1, const GAGenome& p2, 
+TwoPointCrossover(const GAGenome& p1, const GAGenome& p2,
 		  GAGenome* c1, GAGenome* c2){
   const GA1DArrayGenome<T> &mom=DYN_CAST(const GA1DArrayGenome<T> &, p1);
   const GA1DArrayGenome<T> &dad=DYN_CAST(const GA1DArrayGenome<T> &, p2);
@@ -664,7 +664,7 @@ TwoPointCrossover(const GAGenome& p1, const GAGenome& p2,
 
     if(sis.resizeBehaviour() == GAGenome::FIXED_SIZE &&
        bro.resizeBehaviour() == GAGenome::FIXED_SIZE){
-      if(mom.length() != dad.length() || 
+      if(mom.length() != dad.length() ||
 	 sis.length() != bro.length() ||
 	 sis.length() != mom.length()){
 	GAErr(GA_LOC, mom.className(), "two-point cross", gaErrSameLengthReqd);
@@ -675,7 +675,7 @@ TwoPointCrossover(const GAGenome& p1, const GAGenome& p2,
       if(momsite[0] > momsite[1]) SWAP(momsite[0], momsite[1]);
       momlen[0] = momsite[1] - momsite[0];
       momlen[1] = mom.length() - momsite[1];
-      
+
       dadsite[0] = momsite[0];
       dadsite[1] = momsite[1];
       dadlen[0] = momlen[0];
@@ -691,13 +691,13 @@ TwoPointCrossover(const GAGenome& p1, const GAGenome& p2,
       if(momsite[0] > momsite[1]) SWAP(momsite[0], momsite[1]);
       momlen[0] = momsite[1] - momsite[0];
       momlen[1] = mom.length() - momsite[1];
-      
+
       dadsite[0] = GARandomInt(0, dad.length());
       dadsite[1] = GARandomInt(0, dad.length());
       if(dadsite[0] > dadsite[1]) SWAP(dadsite[0], dadsite[1]);
       dadlen[0] = dadsite[1] - dadsite[0];
       dadlen[1] = dad.length() - dadsite[1];
-      
+
       sis.resize(momsite[0]+dadlen[0]+momlen[1]);
       bro.resize(dadsite[0]+momlen[0]+dadlen[1]);
     }
@@ -726,7 +726,7 @@ TwoPointCrossover(const GAGenome& p1, const GAGenome& p2,
       if(momsite[0] > momsite[1]) SWAP(momsite[0], momsite[1]);
       momlen[0] = momsite[1] - momsite[0];
       momlen[1] = mom.length() - momsite[1];
-      
+
       dadsite[0] = momsite[0];
       dadsite[1] = momsite[1];
       dadlen[0] = momlen[0];
@@ -738,7 +738,7 @@ TwoPointCrossover(const GAGenome& p1, const GAGenome& p2,
       if(momsite[0] > momsite[1]) SWAP(momsite[0], momsite[1]);
       momlen[0] = momsite[1] - momsite[0];
       momlen[1] = mom.length() - momsite[1];
-      
+
       dadsite[0] = GARandomInt(0, dad.length());
       dadsite[1] = GARandomInt(0, dad.length());
       if(dadsite[0] > dadsite[1]) SWAP(dadsite[0], dadsite[1]);
@@ -771,13 +771,13 @@ TwoPointCrossover(const GAGenome& p1, const GAGenome& p2,
 
 
 
-// Even and odd crossover for the array works just like it does for the 
+// Even and odd crossover for the array works just like it does for the
 // binary strings.  For even crossover we take the 0th element and every other
 // one after that from the mother.  The 1st and every other come from the
 // father.  For odd crossover, we do just the opposite.
 template <class T> int
 GA1DArrayGenome<T>::
-EvenOddCrossover(const GAGenome& p1, const GAGenome& p2, 
+EvenOddCrossover(const GAGenome& p1, const GAGenome& p2,
 		 GAGenome* c1, GAGenome* c2){
   const GA1DArrayGenome<T> &mom=DYN_CAST(const GA1DArrayGenome<T> &, p1);
   const GA1DArrayGenome<T> &dad=DYN_CAST(const GA1DArrayGenome<T> &, p2);
@@ -816,10 +816,10 @@ EvenOddCrossover(const GAGenome& p1, const GAGenome& p2,
     nc = 2;
   }
   else if(c1 || c2){
-    GA1DArrayGenome<T> &sis = (c1 ? 
-			       DYN_CAST(GA1DArrayGenome<T> &, *c1) : 
+    GA1DArrayGenome<T> &sis = (c1 ?
+			       DYN_CAST(GA1DArrayGenome<T> &, *c1) :
 			       DYN_CAST(GA1DArrayGenome<T> &, *c2));
-    
+
     if(mom.length() == dad.length() && sis.length() == mom.length()){
       for(i=sis.length()-1; i>=1; i-=2){
 	sis.gene(i, mom.gene(i));
@@ -853,7 +853,7 @@ EvenOddCrossover(const GAGenome& p1, const GAGenome& p2,
 //   We make sure that b will be greater than a.
 template <class T> int
 GA1DArrayGenome<T>::
-PartialMatchCrossover(const GAGenome& p1, const GAGenome& p2, 
+PartialMatchCrossover(const GAGenome& p1, const GAGenome& p2,
 		      GAGenome* c1, GAGenome* c2){
   const GA1DArrayGenome<T> &mom=DYN_CAST(const GA1DArrayGenome<T> &, p1);
   const GA1DArrayGenome<T> &dad=DYN_CAST(const GA1DArrayGenome<T> &, p2);
@@ -868,7 +868,7 @@ PartialMatchCrossover(const GAGenome& p1, const GAGenome& p2,
     GAErr(GA_LOC, mom.className(), "parial match cross", gaErrBadParentLength);
     return nc;
   }
-  
+
   if(c1 && c2){
     GA1DArrayGenome<T> &sis=DYN_CAST(GA1DArrayGenome<T> &, *c1);
     GA1DArrayGenome<T> &bro=DYN_CAST(GA1DArrayGenome<T> &, *c2);
@@ -887,8 +887,8 @@ PartialMatchCrossover(const GAGenome& p1, const GAGenome& p2,
     nc = 2;
   }
   else if(c1 || c2){
-    GA1DArrayGenome<T> &sis = (c1 ? 
-			       DYN_CAST(GA1DArrayGenome<T> &, *c1) : 
+    GA1DArrayGenome<T> &sis = (c1 ?
+			       DYN_CAST(GA1DArrayGenome<T> &, *c1) :
 			       DYN_CAST(GA1DArrayGenome<T> &, *c2));
 
     const GA1DArrayGenome<T> *parent1, *parent2;
@@ -929,7 +929,7 @@ GA1DArrayIsHole(const GA1DArrayGenome<T> &c, const GA1DArrayGenome<T> &dad,
 //   This implementation isn't terribly smart.  For example, I do a linear
 // search rather than caching and doing binary search or smarter hash tables.
 //   First we copy the mother into the sister.  Then move the 'holes' into the
-// crossover section and maintain the ordering of the non-hole elements.  
+// crossover section and maintain the ordering of the non-hole elements.
 // Finally, put the 'holes' in the proper order within the crossover section.
 // After we have done the sister, we do the brother.
 template <class T> int
@@ -949,7 +949,7 @@ OrderCrossover(const GAGenome& p1, const GAGenome& p2,
     GAErr(GA_LOC, mom.className(), "order cross", gaErrBadParentLength);
     return nc;
   }
-  
+
   if(c1 && c2){
     GA1DArrayGenome<T> &sis=DYN_CAST(GA1DArrayGenome<T> &, *c1);
     GA1DArrayGenome<T> &bro=DYN_CAST(GA1DArrayGenome<T> &, *c2);
@@ -962,7 +962,7 @@ OrderCrossover(const GAGenome& p1, const GAGenome& p2,
       if(index >= sis.size()) index=0;
       if(GA1DArrayIsHole(sis,dad,index,a,b)) break;
     }
-    
+
     for(; i<sis.size()-b+a; i++, index++){
       if(index >= sis.size()) index=0;
       j=index;
@@ -999,7 +999,7 @@ OrderCrossover(const GAGenome& p1, const GAGenome& p2,
       } while(GA1DArrayIsHole(bro,mom,j,a,b));
       bro.swap(index,j);
     }
-    
+
 // Now put the 'holes' in the proper order within the crossover section.
     for(i=a; i<b; i++){
       if(bro.gene(i) != mom.gene(i)){
@@ -1011,8 +1011,8 @@ OrderCrossover(const GAGenome& p1, const GAGenome& p2,
     nc = 2;
   }
   else if(c1 || c2){
-    GA1DArrayGenome<T> &sis = (c1 ? 
-			       DYN_CAST(GA1DArrayGenome<T> &, *c1) : 
+    GA1DArrayGenome<T> &sis = (c1 ?
+			       DYN_CAST(GA1DArrayGenome<T> &, *c1) :
 			       DYN_CAST(GA1DArrayGenome<T> &, *c2));
 
     const GA1DArrayGenome<T> *parent1, *parent2;
@@ -1053,7 +1053,7 @@ OrderCrossover(const GAGenome& p1, const GAGenome& p2,
 
 
 
-// Cycle crossover for the 1D array genome.  This is implemented as described 
+// Cycle crossover for the 1D array genome.  This is implemented as described
 // in goldberg's book.  The first is picked from mom, then cycle using dad.
 // Finally, fill in the gaps with the elements from dad.
 //   We allocate space for a temporary array in this routine.  It never frees
@@ -1063,8 +1063,8 @@ OrderCrossover(const GAGenome& p1, const GAGenome& p2,
 //  Allocate space for an array of flags.  We use this to keep track of whether
 // the child's contents came from the mother or the father.  We don't free the
 // space here, but it is not a memory leak.
-//   The first step is to cycle through mom & dad to get the cyclic part of 
-// the crossover.  Then fill in the rest of the sis with dad's contents that 
+//   The first step is to cycle through mom & dad to get the cyclic part of
+// the crossover.  Then fill in the rest of the sis with dad's contents that
 // we didn't use in the cycle.  Finally, do the same thing for the other child.
 //   Notice that this implementation makes serious use of the operator= for the
 // objects in the array.  It also requires the operator != and == comparators.
@@ -1139,7 +1139,7 @@ CycleCrossover(const GAGenome& p1, const GAGenome& p2,
     GAMask mask;
     mask.size(sis.length());
     mask.clear();
-    
+
     sis.gene(0, parent1->gene(0));
     mask[0] = 1;
     while(parent2->gene(current) != parent1->gene(0)){

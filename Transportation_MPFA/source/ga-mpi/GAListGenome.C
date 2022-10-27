@@ -17,7 +17,7 @@
 #include <ga-mpi/GAMask.h>
 #include <ga-mpi/garandom.h>
 
-template <class T> int 
+template <class T> int
 GAListIsHole(const GAListGenome<T>&, const GAListGenome<T>&, int, int, int);
 
 
@@ -30,8 +30,8 @@ GAListGenome<T>::className() const {return "GAListGenome";}
 template <class T> int
 GAListGenome<T>::classID() const {return GAID::ListGenome;}
 
-template <class T> 
-GAListGenome<T>::GAListGenome(GAGenome::Evaluator f, void * u) : 
+template <class T>
+GAListGenome<T>::GAListGenome(GAGenome::Evaluator f, void * u) :
 GAList<T>(),
 GAGenome(DEFAULT_LIST_INITIALIZER,
 	 DEFAULT_LIST_MUTATOR,
@@ -42,8 +42,8 @@ GAGenome(DEFAULT_LIST_INITIALIZER,
 }
 
 
-template <class T> 
-GAListGenome<T>::GAListGenome(const GAListGenome<T> & orig) : 
+template <class T>
+GAListGenome<T>::GAListGenome(const GAListGenome<T> & orig) :
 GAList<T>(),
 GAGenome() {
   GAListGenome<T>::copy(orig);
@@ -76,10 +76,10 @@ GAListGenome<T>::copy(const GAGenome & orig){
 
 #ifdef GALIB_USE_STREAMS
 // Traverse the list (breadth-first) and dump the contents as best we can to
-// the stream.  We don't try to write the contents of the nodes - we simply 
+// the stream.  We don't try to write the contents of the nodes - we simply
 // write a . for each node in the list.
 template <class T> int
-GAListGenome<T>::write(STD_OSTREAM & os) const 
+GAListGenome<T>::write(STD_OSTREAM & os) const
 {
   os << "node       next       prev       contents\n";
   if(!this->hd) return 0;;
@@ -105,7 +105,7 @@ GAListGenome<T>::write(STD_OSTREAM & os) const
 // then you have nothing to worry about.
 //   Neither of these operators affects the internal iterator of either
 // list genome in any way.
-template <class T> int 
+template <class T> int
 GAListGenome<T>::equal(const GAGenome & c) const
 {
   if(this == &c) return 1;
@@ -136,14 +136,14 @@ GAListGenome<T>::equal(const GAGenome & c) const
 ---------------------------------------------------------------------------- */
 // Mutate a list by nuking nodes.  Any node has a pmut chance of getting nuked.
 // This is actually kind of bogus for the second part of the if clause (if nMut
-// is greater than or equal to 1).  Nodes end up having more than pmut 
+// is greater than or equal to 1).  Nodes end up having more than pmut
 // probability of getting nuked.
 //   After the mutation the iterator is left at the head of the list.
 template <class T> int
 GAListGenome<T>::DestructiveMutator(GAGenome & c, float pmut)
 {
   GAListGenome<T> &child=DYN_CAST(GAListGenome<T> &, c);
-  register int n, i;
+  int n, i;
   if(pmut <= 0.0) return 0;
 
   n = child.size();
@@ -171,14 +171,14 @@ GAListGenome<T>::DestructiveMutator(GAGenome & c, float pmut)
 
 // Mutate a list by swapping two nodes.  Any node has a pmut chance of getting
 // swapped, and the swap could happen to any other node.  And in the case of
-// nMut < 1, the swap may generate a swap partner that is the same node, in 
+// nMut < 1, the swap may generate a swap partner that is the same node, in
 // which case no swap occurs (we don't check).
 //   After the mutation the iterator is left at the head of the list.
 template <class T> int
 GAListGenome<T>::SwapMutator(GAGenome & c, float pmut)
 {
   GAListGenome<T> &child=DYN_CAST(GAListGenome<T> &, c);
-  register int n, i;
+  int n, i;
   if(pmut <= 0.0) return 0;
 
   n = child.size();
@@ -205,7 +205,7 @@ GAListGenome<T>::SwapMutator(GAGenome & c, float pmut)
 
 // This comparator returns the number of elements that the two lists have
 // in common (both in position and in value).  If they are different lengths
-// then we just say they are completely different.  This is probably barely 
+// then we just say they are completely different.  This is probably barely
 // adequate for most applications - we really should give more credit for
 // nodes that are the same but in different positions.  But that would be
 // pretty nasty to compute.
@@ -213,7 +213,7 @@ GAListGenome<T>::SwapMutator(GAGenome & c, float pmut)
 // which to compare this diversity measure.  Its kind of hard to define this
 // one in a general way...
 template <class T> float
-GAListGenome<T>::NodeComparator(const GAGenome& a, const GAGenome& b) 
+GAListGenome<T>::NodeComparator(const GAGenome& a, const GAGenome& b)
 {
   if(&a == &b) return 0;
   const GAListGenome<T>& sis=DYN_CAST(const GAListGenome<T>&, a);
@@ -244,7 +244,7 @@ GAListGenome<T>::NodeComparator(const GAGenome& a, const GAGenome& b)
 
 #define SWAP(a,b) {unsigned int tmp=a; a=b; b=tmp;}
 
-// This crossover picks a site between nodes in each parent.  It is the same 
+// This crossover picks a site between nodes in each parent.  It is the same
 // as single point crossover on a resizeable binary string genome.  The site
 // in the mother is not necessarily the same as the site in the father!
 //   When we pick a crossover site, it is between nodes of the list (otherwise
@@ -253,7 +253,7 @@ GAListGenome<T>::NodeComparator(const GAGenome& a, const GAGenome& b)
 // whereas the cross site possibilities are numbered from 0 to size, inclusive.
 // This means we have to map the site to the list to determine whether an
 // insertion should occur before or after a node.
-//   We first copy the mother into the child (this deletes whatever contents 
+//   We first copy the mother into the child (this deletes whatever contents
 // were in the child originally).  Then we clone the father from the cross site
 // to the end of the list.  Then we delete the tail of the child from the
 // mother's cross site to the end of the list.  Finally, we insert the clone
@@ -265,7 +265,7 @@ GAListGenome<T>::NodeComparator(const GAGenome& a, const GAGenome& b)
 // do better by copying only what we need of the mother.
 template <class T> int
 GAListGenome<T>::
-OnePointCrossover(const GAGenome& p1, const GAGenome& p2, 
+OnePointCrossover(const GAGenome& p1, const GAGenome& p2,
 		  GAGenome* c1, GAGenome* c2){
   const GAListGenome<T> &mom=DYN_CAST(const GAListGenome<T> &, p1);
   const GAListGenome<T> &dad=DYN_CAST(const GAListGenome<T> &, p2);
@@ -330,13 +330,13 @@ OnePointCrossover(const GAGenome& p1, const GAGenome& p2,
 //   This version of the partial match crossover uses objects that are multiply
 // instantiated - each list genome contains its own objects in its nodes.
 // The operator== method must be defined on the object for this implementation
-// to work!  In this case, the 'object' is an int, so we're OK.  If you are 
+// to work!  In this case, the 'object' is an int, so we're OK.  If you are
 // putting your own objects in the nodes, be sure you have operator== defined
 // for your object.  You must also have operator!= defined for your object.  We
 // do not do any assignments, so operator= and/or copy is not required.
 //   We assume that none of the nodes will return a NULL pointer.  Also assume
 // that the cross site has been selected properly.
-//   First we make a copy of the mother.  Then we loop through the match 
+//   First we make a copy of the mother.  Then we loop through the match
 // section and try to swap each element in the child's match section with its
 // partner (as defined by the current node in the father's match section).
 //   Mirroring will work the same way - just swap mom & dad and you're all set.

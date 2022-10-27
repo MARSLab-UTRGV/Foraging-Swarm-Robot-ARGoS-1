@@ -21,7 +21,7 @@
    Genome class definition
 ---------------------------------------------------------------------------- */
 GA2DBinaryStringGenome::
-GA2DBinaryStringGenome(unsigned int width, unsigned int height, 
+GA2DBinaryStringGenome(unsigned int width, unsigned int height,
 		       GAGenome::Evaluator f, void * u) :
 GABinaryString(width*height),
 GAGenome(DEFAULT_2DBINSTR_INITIALIZER,
@@ -54,8 +54,8 @@ GA2DBinaryStringGenome::clone(GAGenome::CloneMethod flag) const {
   }
   else{
     cpy->GAGenome::copy(*this);
-    cpy->minX = minX; cpy->minY = minY; 
-    cpy->maxX = maxX; cpy->maxY = maxY; 
+    cpy->minX = minX; cpy->minY = minY;
+    cpy->maxX = maxX; cpy->maxY = maxY;
   }
   return cpy;
 }
@@ -69,10 +69,10 @@ GA2DBinaryStringGenome::copy(const GAGenome & orig)
   if(c) {
     GAGenome::copy(*c);
     GABinaryString::copy(*c);
-    nx = c->nx; ny = c->ny; 
-    minX = c->minX; minY = c->minY; 
+    nx = c->nx; ny = c->ny;
+    minX = c->minX; minY = c->minY;
     maxX = c->maxX; maxY = c->maxY;
-  } 
+  }
 }
 
 
@@ -105,7 +105,7 @@ GA2DBinaryStringGenome::resize(int w, int h)
 
 // Move the bits into the right position.  If we're smaller, then shift to
 // the smaller size before we do the resize (the resize method maintains bit
-// integrety).  If we're larger, do the move after the resize.  If we're the 
+// integrety).  If we're larger, do the move after the resize.  If we're the
 // same size the we don't do anything.  When we're adding more bits, the new
 // bits get set randomly to 0 or 1.
 
@@ -153,7 +153,7 @@ GA2DBinaryStringGenome::read(STD_ISTREAM & is)
 
   _evaluated = gaFalse;
 
-  if(is.eof() && 
+  if(is.eof() &&
      ((j < ny) ||	     // didn't get some lines
       (i < nx && i != 0))){   // stopped early on a row
     GAErr(GA_LOC, className(), "read", gaErrUnexpectedEOF);
@@ -168,7 +168,7 @@ GA2DBinaryStringGenome::read(STD_ISTREAM & is)
 // Dump the digits to the stream with a newline between each row.  No newline
 // at the end of the whole thing.
 int
-GA2DBinaryStringGenome::write(STD_OSTREAM & os) const 
+GA2DBinaryStringGenome::write(STD_OSTREAM & os) const
 {
   for(unsigned int j=0; j<ny; j++){
     for(unsigned int i=0; i<nx; i++)
@@ -180,7 +180,7 @@ GA2DBinaryStringGenome::write(STD_OSTREAM & os) const
 #endif
 
 
-int 
+int
 GA2DBinaryStringGenome::resizeBehaviour(GAGenome::Dimension which) const {
   int val = 0;
   if(which == WIDTH) {
@@ -318,7 +318,7 @@ GA2DBinaryStringGenome::equal(const GA2DBinaryStringGenome& orig,
 }
 
 
-int 
+int
 GA2DBinaryStringGenome::equal(const GAGenome & c) const
 {
   if(this == &c) return 1;
@@ -344,7 +344,7 @@ GA2DBinaryStringGenome::equal(const GAGenome & c) const
   The order for looping through indices is height-then-width (ie height loops
 before a single width increment)
 ---------------------------------------------------------------------------- */
-void 
+void
 GA2DBinaryStringGenome::UniformInitializer(GAGenome & c)
 {
   GA2DBinaryStringGenome &child=DYN_CAST(GA2DBinaryStringGenome &, c);
@@ -355,7 +355,7 @@ GA2DBinaryStringGenome::UniformInitializer(GAGenome & c)
 }
 
 
-void 
+void
 GA2DBinaryStringGenome::UnsetInitializer(GAGenome & c)
 {
   GA2DBinaryStringGenome &child=DYN_CAST(GA2DBinaryStringGenome &, c);
@@ -364,20 +364,20 @@ GA2DBinaryStringGenome::UnsetInitializer(GAGenome & c)
 }
 
 
-void 
+void
 GA2DBinaryStringGenome::SetInitializer(GAGenome & c)
 {
   GA2DBinaryStringGenome &child=DYN_CAST(GA2DBinaryStringGenome &, c);
-  child.resize(GAGenome::ANY_SIZE, GAGenome::ANY_SIZE);	
+  child.resize(GAGenome::ANY_SIZE, GAGenome::ANY_SIZE);
   child.set(0, 0, child.width(), child.height());
 }
 
 
-int 
+int
 GA2DBinaryStringGenome::FlipMutator(GAGenome & c, float pmut)
 {
   GA2DBinaryStringGenome &child=DYN_CAST(GA2DBinaryStringGenome &, c);
-  register int n, m, i, j;
+  int n, m, i, j;
   if(pmut <= 0.0) return(0);
 
   float nMut = pmut * STA_CAST(float, child.size());
@@ -431,7 +431,7 @@ GA2DBinaryStringGenome::BitComparator(const GAGenome& a, const GAGenome& b){
 
 int
 GA2DBinaryStringGenome::
-UniformCrossover(const GAGenome& p1, const GAGenome& p2, 
+UniformCrossover(const GAGenome& p1, const GAGenome& p2,
 		 GAGenome* c1, GAGenome* c2){
   const GA2DBinaryStringGenome &mom=
     DYN_CAST(const GA2DBinaryStringGenome &, p1);
@@ -486,8 +486,8 @@ UniformCrossover(const GAGenome& p1, const GAGenome& p2,
     nc = 2;
   }
   else if(c1 || c2){
-    GA2DBinaryStringGenome &sis = (c1 ? 
-				   DYN_CAST(GA2DBinaryStringGenome&, *c1) : 
+    GA2DBinaryStringGenome &sis = (c1 ?
+				   DYN_CAST(GA2DBinaryStringGenome&, *c1) :
 				   DYN_CAST(GA2DBinaryStringGenome&, *c2));
 
     if(mom.width() == dad.width() && mom.height() == dad.height() &&
@@ -515,13 +515,13 @@ UniformCrossover(const GAGenome& p1, const GAGenome& p2,
 
 //   When we do single point crossover on resizable 2D genomes we can either
 // clip or pad to make the mismatching geometries work out.  Either way, both
-// children end up with the same dimensions (the children have the same 
+// children end up with the same dimensions (the children have the same
 // dimensions as each other, not the same as if they were clipped/padded).
 //   When we pad, the extra space is filled with random bits.  This
 // implementation does only clipping, no padding!
 int
 GA2DBinaryStringGenome::
-OnePointCrossover(const GAGenome& p1, const GAGenome& p2, 
+OnePointCrossover(const GAGenome& p1, const GAGenome& p2,
 		  GAGenome* c1, GAGenome* c2){
   const GA2DBinaryStringGenome &mom=
     DYN_CAST(const GA2DBinaryStringGenome &, p1);
@@ -539,8 +539,8 @@ OnePointCrossover(const GAGenome& p1, const GAGenome& p2,
 
     if(sis.resizeBehaviour(GAGenome::WIDTH) == GAGenome::FIXED_SIZE &&
        bro.resizeBehaviour(GAGenome::WIDTH) == GAGenome::FIXED_SIZE){
-      if(mom.width() != dad.width() || 
-	 sis.width() != bro.width() || 
+      if(mom.width() != dad.width() ||
+	 sis.width() != bro.width() ||
 	 sis.width() != mom.width()){
 	GAErr(GA_LOC, mom.className(), "one-point cross", gaErrSameLengthReqd);
 	return nc;
@@ -564,8 +564,8 @@ OnePointCrossover(const GAGenome& p1, const GAGenome& p2,
 
     if(sis.resizeBehaviour(GAGenome::HEIGHT) == GAGenome::FIXED_SIZE &&
        bro.resizeBehaviour(GAGenome::HEIGHT) == GAGenome::FIXED_SIZE){
-      if(mom.height() != dad.height() || 
-	 sis.height() != bro.height() || 
+      if(mom.height() != dad.height() ||
+	 sis.height() != bro.height() ||
 	 sis.height() != mom.height()){
 	GAErr(GA_LOC, mom.className(), "one-point cross", gaErrSameLengthReqd);
 	return nc;
@@ -640,9 +640,9 @@ OnePointCrossover(const GAGenome& p1, const GAGenome& p2,
       sitey = GAMin(momsitey, dadsitey);
       leny = GAMin(momleny, dadleny);
     }
-    
+
     sis.resize(sitex+lenx, sitey+leny);
-    
+
     if(GARandomBit()){
       sis.copy(mom, 0, 0, momsitex-sitex, momsitey-sitey, sitex, sitey);
       sis.copy(dad, sitex, 0, dadsitex, dadsitey-sitey, lenx, sitey);
@@ -666,7 +666,7 @@ OnePointCrossover(const GAGenome& p1, const GAGenome& p2,
 
 int
 GA2DBinaryStringGenome::
-EvenOddCrossover(const GAGenome& p1, const GAGenome& p2, 
+EvenOddCrossover(const GAGenome& p1, const GAGenome& p2,
 		 GAGenome* c1, GAGenome* c2){
   const GA2DBinaryStringGenome &mom=
     DYN_CAST(const GA2DBinaryStringGenome &, p1);
@@ -679,7 +679,7 @@ EvenOddCrossover(const GAGenome& p1, const GAGenome& p2,
   if(c1 && c2){
     GA2DBinaryStringGenome &sis=DYN_CAST(GA2DBinaryStringGenome &, *c1);
     GA2DBinaryStringGenome &bro=DYN_CAST(GA2DBinaryStringGenome &, *c2);
-    
+
     if(sis.width() == bro.width() && sis.height() == bro.height() &&
        mom.width() == dad.width() && mom.height() == dad.height() &&
        sis.width() == mom.width() && sis.height() == mom.height()){
@@ -719,10 +719,10 @@ EvenOddCrossover(const GAGenome& p1, const GAGenome& p2,
     nc = 2;
   }
   else if(c1 || c2){
-    GA2DBinaryStringGenome &sis = (c1 ? 
+    GA2DBinaryStringGenome &sis = (c1 ?
 				   DYN_CAST(GA2DBinaryStringGenome&, *c1) :
 				   DYN_CAST(GA2DBinaryStringGenome&, *c2));
-    
+
     if(mom.width() == dad.width() && mom.height() == dad.height() &&
        sis.width() == mom.width() && sis.height() == mom.height()){
       int count=0;
