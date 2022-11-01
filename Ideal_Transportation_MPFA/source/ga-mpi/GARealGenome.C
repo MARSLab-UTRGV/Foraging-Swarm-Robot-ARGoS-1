@@ -13,7 +13,7 @@
 
 // We must also specialize the allele set so that the alleles are handled
 // properly.  Be sure to handle bounds correctly whether we are discretized
-// or continuous.  Handle the case where someone sets stupid bounds that 
+// or continuous.  Handle the case where someone sets stupid bounds that
 // might cause an infinite loop for exclusive bounds.
 template <> float
 GAAlleleSet<float>::allele() const {
@@ -29,8 +29,8 @@ GAAlleleSet<float>::allele() const {
     if(core->lowerb == GAAllele::EXCLUSIVE) value += core->a[2];
   }
   else{
-    if(core->a[0] == core->a[1] && 
-       core->lowerb == GAAllele::EXCLUSIVE && 
+    if(core->a[0] == core->a[1] &&
+       core->lowerb == GAAllele::EXCLUSIVE &&
        core->upperb == GAAllele::EXCLUSIVE) {
       value = core->a[0];
     }
@@ -74,9 +74,9 @@ GAAlleleSet<float>::allele(unsigned int i) const {
 
 // now the specialization of the genome itself.
 
-template <> const char * 
+template <> const char *
 GA1DArrayAlleleGenome<float>::className() const {return "GARealGenome";}
-template <> int 
+template <> int
 GA1DArrayAlleleGenome<float>::classID() const {return GAID::FloatGenome;}
 
 template <> GA1DArrayAlleleGenome<float>::
@@ -108,7 +108,7 @@ GA1DArrayGenome<float>(sa.size(), f, u){
   crossover(DEFAULT_REAL_CROSSOVER);
 }
 
-template <> 
+template <>
 GA1DArrayAlleleGenome<float>::~GA1DArrayAlleleGenome(){
   delete [] aset;
 }
@@ -148,12 +148,12 @@ GA1DArrayAlleleGenome<float>::read(STD_ISTREAM & is) {
 ---------------------------------------------------------------------------- */
 // The Gaussian mutator picks a new value based on a Gaussian distribution
 // around the current value.  We respect the bounds (if any).
-//*** need to figure out a way to make the stdev other than 1.0 
-int 
+//*** need to figure out a way to make the stdev other than 1.0
+int
 GARealGaussianMutator(GAGenome& g, float pmut){
   GA1DArrayAlleleGenome<float> &child=
     DYN_CAST(GA1DArrayAlleleGenome<float> &, g);
-  register int n, i;
+  int n, i;
   if(pmut <= 0.0) return(0);
 
   float nMut = pmut * (float)(child.length());
@@ -200,7 +200,7 @@ GARealGaussianMutator(GAGenome& g, float pmut){
 // identical.  If parents are not the same length, the extra elements are not
 // set!  You might want to add some noise to this so that both children are not
 // the same...
-int 
+int
 GARealArithmeticCrossover(const GAGenome& p1, const GAGenome& p2,
 			  GAGenome* c1, GAGenome* c2) {
   const GA1DArrayGenome<float> &mom=
@@ -222,8 +222,8 @@ GARealArithmeticCrossover(const GAGenome& p1, const GAGenome& p2,
     n = 2;
   }
   else if(c1 || c2){
-    GA1DArrayGenome<float> &sis = (c1 ? 
-				   DYN_CAST(GA1DArrayGenome<float> &, *c1) : 
+    GA1DArrayGenome<float> &sis = (c1 ?
+				   DYN_CAST(GA1DArrayGenome<float> &, *c1) :
 				   DYN_CAST(GA1DArrayGenome<float> &, *c2));
 
     int len = GAMax(mom.length(), dad.length());
@@ -240,7 +240,7 @@ GARealArithmeticCrossover(const GAGenome& p1, const GAGenome& p2,
 // Blend crossover generates a new value based on the interval between parents.
 // We generate a uniform distribution based on the distance between parent
 // values, then choose the child value based upon that distribution.
-int 
+int
 GARealBlendCrossover(const GAGenome& p1, const GAGenome& p2,
 		     GAGenome* c1, GAGenome* c2) {
   const GA1DArrayGenome<float> &mom=
@@ -257,9 +257,9 @@ GARealBlendCrossover(const GAGenome& p1, const GAGenome& p2,
     int len = GAMax(mom.length(), dad.length());
     for(int i=0; i<len; i++) {
       float dist = 0;
-      if(mom.gene(i) > dad.gene(i)) 
+      if(mom.gene(i) > dad.gene(i))
 	dist = mom.gene(i) - dad.gene(i);
-      else 
+      else
 	dist = dad.gene(i) - mom.gene(i);
       float lo = (GAMin(mom.gene(i), dad.gene(i))) - 0.5*dist;
       float hi = (GAMax(mom.gene(i), dad.gene(i))) + 0.5*dist;
@@ -276,9 +276,9 @@ GARealBlendCrossover(const GAGenome& p1, const GAGenome& p2,
     int len = GAMax(mom.length(), dad.length());
     for(int i=0; i<len; i++) {
       float dist = 0;
-      if(mom.gene(i) > dad.gene(i)) 
+      if(mom.gene(i) > dad.gene(i))
 	dist = mom.gene(i) - dad.gene(i);
-      else 
+      else
 	dist = dad.gene(i) - mom.gene(i);
       float lo = (GAMin(mom.gene(i), dad.gene(i))) - 0.5*dist;
       float hi = (GAMax(mom.gene(i), dad.gene(i))) + 0.5*dist;
@@ -298,7 +298,7 @@ GARealBlendCrossover(const GAGenome& p1, const GAGenome& p2,
 //
 // These must be included _after_ the specializations because some compilers
 // get all wigged out about the declaration/specialization order.  Note that
-// some compilers require a syntax different than others when forcing the 
+// some compilers require a syntax different than others when forcing the
 // instantiation (i.e. GNU wants the 'template class', borland does not).
 #ifndef GALIB_USE_AUTO_INST
 #include <ga-mpi/GAAllele.C>

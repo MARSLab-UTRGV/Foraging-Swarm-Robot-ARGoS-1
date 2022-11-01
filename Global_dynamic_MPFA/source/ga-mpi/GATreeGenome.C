@@ -25,7 +25,7 @@ template <class T> int
 GATreeGenome<T>::classID() const {return GAID::TreeGenome;}
 
 template <class T>
-GATreeGenome<T>::GATreeGenome(GAGenome::Evaluator f, void * u) : 
+GATreeGenome<T>::GATreeGenome(GAGenome::Evaluator f, void * u) :
 GATree<T>(),
 GAGenome(DEFAULT_TREE_INITIALIZER,
 	 DEFAULT_TREE_MUTATOR,
@@ -37,7 +37,7 @@ GAGenome(DEFAULT_TREE_INITIALIZER,
 
 
 template <class T>
-GATreeGenome<T>::GATreeGenome(const GATreeGenome<T> & orig) : 
+GATreeGenome<T>::GATreeGenome(const GATreeGenome<T> & orig) :
 GATree<T>(),
 GAGenome() {
   GATreeGenome<T>::copy(orig);
@@ -70,7 +70,7 @@ GATreeGenome<T>::copy(const GAGenome & orig) {
 
 #ifdef GALIB_USE_STREAMS
 // Traverse the tree (breadth-first) and dump the contents as best we can to
-// the stream.  We don't try to write the contents of the nodes - we simply 
+// the stream.  We don't try to write the contents of the nodes - we simply
 // write a . for each node in the tree.
 //   We allocate space for x,y coord pair for each node in the tree.  Then we
 // do a depth-first traversal of the tree and assign coords to the nodes in the
@@ -102,7 +102,7 @@ _tt(STD_OSTREAM & os, GANode<T> * n)
 }
 
 template <class T> int
-GATreeGenome<T>::write(STD_OSTREAM & os) const 
+GATreeGenome<T>::write(STD_OSTREAM & os) const
 {
   os << "node       parent     child      next       prev       contents\n";
   _tt(os, (GANode<T> *)(this->rt));
@@ -111,7 +111,7 @@ GATreeGenome<T>::write(STD_OSTREAM & os) const
 #endif
 
 
-template <class T> int  
+template <class T> int
 GATreeGenome<T>::equal(const GAGenome & c) const
 {
   if(this == &c) return 1;
@@ -140,7 +140,7 @@ template <class T> int
 GATreeGenome<T>::DestructiveMutator(GAGenome & c, float pmut)
 {
   GATreeGenome<T> &child=DYN_CAST(GATreeGenome<T> &, c);
-  register int n, i;
+  int n, i;
   if(pmut <= 0.0) return 0;
 
   n = child.size();
@@ -169,14 +169,14 @@ GATreeGenome<T>::DestructiveMutator(GAGenome & c, float pmut)
 // This is a rearranging mutation operator.  It randomly picks two nodes in the
 // tree and swaps them.  Any node has a pmut chance of getting
 // swapped, and the swap could happen to any other node.  And in the case of
-// nMut < 1, the swap may generate a swap partner that is the same node, in 
+// nMut < 1, the swap may generate a swap partner that is the same node, in
 // which case no swap occurs (we don't check).
 //   After the mutation the iterator is left at the root of the tree.
 template <class T> int
 GATreeGenome<T>::SwapNodeMutator(GAGenome & c, float pmut)
 {
   GATreeGenome<T> &child=DYN_CAST(GATreeGenome<T> &, c);
-  register int n, i;
+  int n, i;
   if(pmut <= 0.0) return 0;
 
   n = child.size();
@@ -214,7 +214,7 @@ template <class T> int
 GATreeGenome<T>::SwapSubtreeMutator(GAGenome & c, float pmut)
 {
   GATreeGenome<T> &child=DYN_CAST(GATreeGenome<T> &, c);
-  register int n, i;
+  int n, i;
   int a, b;
   if(pmut <= 0.0) return 0;
 
@@ -247,7 +247,7 @@ GATreeGenome<T>::SwapSubtreeMutator(GAGenome & c, float pmut)
 // We use the recursive tree function to compare the tree structures.  This
 // does not compare the contents of the nodes.
 template <class T> float
-GATreeGenome<T>::TopologyComparator(const GAGenome& a, const GAGenome& b) 
+GATreeGenome<T>::TopologyComparator(const GAGenome& a, const GAGenome& b)
 {
   if(&a == &b) return 0;
   const GATreeGenome<T>& sis=DYN_CAST(const GATreeGenome<T>&, a);
@@ -277,7 +277,7 @@ GATreeGenome<T>::TopologyComparator(const GAGenome& a, const GAGenome& b)
 //     do the check to see if the crossover site is valid.
 template <class T> int
 GATreeGenome<T>::
-OnePointCrossover(const GAGenome& p1, const GAGenome& p2, 
+OnePointCrossover(const GAGenome& p1, const GAGenome& p2,
 		  GAGenome* c1, GAGenome* c2){
   const GATreeGenome<T> &mom=DYN_CAST(const GATreeGenome<T> &, p1);
   const GATreeGenome<T> &dad=DYN_CAST(const GATreeGenome<T> &, p2);
